@@ -1,0 +1,29 @@
+{
+  "name": "nivatech-meet-samples-js",
+  "version": "0.1.0",
+  "description": "A nodejs sample on how to integrate with Nivatech Meet API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meet-rs-api/nivatech-meet-api-sample.git"
+  },
+  "keywords": [
+    "nivatech",
+    "meet",
+    "interviews",
+    "api",
+    "sdk"
+  ],
+  "author": "Nivatech doo, Svilajnac",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/meet-rs-api/nivatech-meet-api-sample/issues"
+  },
+  "homepage": "https://github.com/meet-rs-api/nivatech-meet-api-sample#readme",
+  "dependencies": {
+    "node-fetch": "^2.0.0"
+  }
+}
