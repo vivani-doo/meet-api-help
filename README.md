@@ -30,6 +30,9 @@ Here are the scenarios which we will cover here:
 - Working with Meet projects (aka "interview job positions") 
 - Manage tenants
 - Webhooks
+- [Feedbacks](#feedbacks)
+- [Usage](#usage)
+- Billing
 
 ## Authentication
 
@@ -37,7 +40,7 @@ Meet API authentication is a standard client credentials OAUth scenario where yo
 
 You can obtain your API key and secret, in Meet Pro app (<https://meet.rs/pro)> under Settings >> Company profile.
 
-![alt text](https://meet-cdn.azureedge.net/assets/docs/settings_devtools.png "DevTools")
+![alt text](https://cdn.meet.rs/assets/docs/settings_devtools.png "DevTools")
 
 Using the language/technology of your choice you need to simply make this request
 
@@ -275,7 +278,7 @@ How would this Meet work when defined like this?
 
 Anyone opening meeting url will see this on their login page
 
-![alt text](https://meet-cdn.azureedge.net/assets/docs/multi_auth_provider.png "Authentication with multiple providers")
+![alt text](https://cdn.meet.rs/assets/docs/multi_auth_provider.png "Authentication with multiple providers")
 
 John will enter the passcode he will receive in his email and join the Meet as candidate
 
@@ -326,7 +329,7 @@ Take a look at how Jack Sparrow admin will be able to access his Meet
 
 He can login with any identity he has with Google, Microsoft, Linkedin, Facebook (as long he used there frank@moody.com email) or simply enter a password.
 
-![alt text](https://meet-cdn.azureedge.net/assets/docs/all_providers.png "Authentication with all providers")
+![alt text](https://cdn.meet.rs/assets/docs/all_providers.png "Authentication with all providers")
 
 ### Guest participants
 
@@ -375,7 +378,7 @@ NB: Second participant has only role without any access rule definition which is
 
 This is how loging screen for this Meet will look like
 
-![alt text](https://meet-cdn.azureedge.net/assets/docs/guest_anon_login.png "Anonymous guest authentication")
+![alt text](https://cdn.meet.rs/assets/docs/guest_anon_login.png "Anonymous guest authentication")
 
 #### Password protected anonymous guest
 
@@ -458,3 +461,164 @@ Sometimes you need a Meet where only a specific participant will be allowed to j
 
 NB: John Smith will have to authenticate with Microsoft in order to be allowed allowed to join the Meet but only in a role of a Guest.
 
+## Feedbacks
+
+Every participant of the Meet can click a feedback button at any time, and on NPS form rate his/hers Meet experience and provide feedback. We are also asking each one of the participants at the end of the Meet if they are willing to provide feedback which many do.
+
+This feedback is most of the time about the quality of the Meet app so it is important QoS parameter and sometimes it can be about interviewer and interview itself which can be interesting feedback to the Meet organizer.
+
+![alt text](https://cdn.meet.rs/assets/docs/nps-feedback-form.png "NPS feedback form")
+
+In our effort to be totaly transparent with our users, we have decided to share this NPS feedback data, so our users can see the NPS feedback for their tenant in the [PRO application](https://meet.rs/pro).
+
+As everything else available in the PRO app, you can also just use the rest API to fetch the same data as PRO app does.
+
+Simplest way to get the data for the tenant whose API key and secret are using and for the current month is a simple get with no params
+
+```json
+GET https://api.meet.rs/v1/feedbacks
+Content-Type: application/json
+
+Headers
+---------------------------------------------
+Authorization: bearer ACCESS_TOKEN_VALUE_HERE
+```
+
+In case you would like to get the feedbacks for different date range then this month you can add to query params from and to parameters with range dates given in ISO format
+
+```pseudo
+GET https://api.meet.rs/v1/feedbacks?from=2020-07-01T00:00:00.000Z&to=2020-07-31T23:59:59.000Z
+Content-Type: application/json
+
+Headers
+---------------------------------------------
+Authorization: bearer ACCESS_TOKEN_VALUE_HERE
+```
+
+Both calls will return all the data of your tenant and every subtenant your tenant might have.
+
+In case you would like to get only the data of a single tenant you neet to pass tenant code/id parameter which you can see in Company settings in PRO app or if you GET fetch  from API the list of tenants. 
+
+```pseudo
+GET https://api.meet.rs/v1/feedbacks/A1B2C3D4E5F6
+Content-Type: application/json
+
+Headers
+---------------------------------------------
+Authorization: bearer ACCESS_TOKEN_VALUE_HERE
+```
+
+This will return the feedback data only of a tenant with a given code
+
+Offcourse, you can also define optional from and to even in this case when you have tenant code defined
+
+```pseudo
+GET https://api.meet.rs/v1/feedbacks/A1B2C3D4E5F6?from=2020-07-01T00:00:00.000Z&to=2020-07-31T23:59:59.000Z
+Content-Type: application/json
+
+Headers
+---------------------------------------------
+Authorization: bearer ACCESS_TOKEN_VALUE_HERE
+```
+
+Regardless of how do you make the web service call you would allways get the array of the same feedback items looking like this
+
+```json
+[{
+    "rating": 5,
+    "text": "test feedback 1",
+    "userId": "c475f065-9aa7-457e-e605-08d82d562450",
+    "resourceId": "le3YHkUb",
+    "resourceType": 1,
+    "tenantId": "84587e95-77a0-453d-dd3b-08d7611907eb",
+    "timestamp": "2020-07-22T11:57:40.3817518Z",
+    "appVersion": "2.7.21.1050",
+    "browser": "Anheim",
+    "operatingSystem": "Windows",
+    "screenHeight": "1200",
+    "screenWidth": "1920",
+    "isTouchEnabled": false,
+    "id": "cf08a200-3b79-445d-a849-08d82d5c6c28"
+}]
+```
+
+
+## Usage
+In order to have precise insights on the Meets happening in your tenant which will have impact on your monthly payments you can control your usage data providing easy to understand overview of your Meet app utilization.
+
+You can see the usage data in the [PRO application](https://meet.rs/pro) visualized in a table or as everything else available in the PRO app, you can also just use the rest API to fetch the same data as PRO app does.
+
+Simplest way to get the data for the current tenant and for the current month is a simple make a GET request with no params
+
+```json
+GET https://api.meet.rs/v1/usage
+Content-Type: application/json
+
+Headers
+---------------------------------------------
+Authorization: bearer ACCESS_TOKEN_VALUE_HERE
+```
+
+In case you would like to get the usage infromation for different date range then this month you can add to query params from and to parameters with range dates given in ISO format
+
+```pseudo
+GET https://api.meet.rs/v1/usage?from=2020-07-01T00:00:00.000Z&to=2020-07-31T23:59:59.000Z
+Content-Type: application/json
+
+Headers
+---------------------------------------------
+Authorization: bearer ACCESS_TOKEN_VALUE_HERE
+```
+
+Both calls will return all the data of your tenant and every subtenant your tenant might have.
+
+In case you would like to get only the data of a single tenant you neet to pass tenant code/id parameter which you can see in Company settings in PRO app or if you GET fetch  from API the list of tenants. 
+
+```pseudo
+GET https://api.meet.rs/v1/usage/A1B2C3D4E5F6
+Content-Type: application/json
+
+Headers
+---------------------------------------------
+Authorization: bearer ACCESS_TOKEN_VALUE_HERE
+```
+
+This will return the feedback data only of a tenant with a given code
+
+Offcourse, you can also define optional from and to even in this case when you have tenant code defined
+
+```pseudo
+GET https://api.meet.rs/v1/usage/A1B2C3D4E5F6?from=2020-07-01T00:00:00.000Z&to=2020-07-31T23:59:59.000Z
+Content-Type: application/json
+
+Headers
+---------------------------------------------
+Authorization: bearer ACCESS_TOKEN_VALUE_HERE
+```
+
+Regardless of how do you make the web service call you would allways get the array of the same feedback items looking like this
+
+```json
+[{
+    "code": "le3YHkUb",
+    "title": "Quick meet 07/22 - 265",
+    "description": "Guest ",
+    "participants": 2,
+    "createdAt": "2020-07-22T11:57:00.408594Z",
+    "startedAt": "2020-07-22T11:57:11.2909288Z",
+    "endedAt": "2020-07-22T11:57:28.0734762Z",
+    "totalDurationInSeconds": 17,
+    "billableDurationInSeconds": 10,
+    "isFree": true,
+    "isSubscriptionCovered": true,
+    "subscriptionId": "d66b178d-c801-481f-d5a9-08d82d522f18",
+    "id": "a5c9d5b6-87f6-4743-a06c-08d82d5e2c69"
+}]
+```
+
+A few clarifications on the response data:
+
+- **Total duration** is a duration in seconds when there is at least one participant on the ongoing Meet
+- **Billable duration** is a duration in seconds of the Meet when there were at least one participant on the ongoing Meet
+- **Is Free** if a billable duration is less then 20 minutes, Meet is for free.
+- **Is Subscription Covered** most of the subscriptions are having certain number of Meets per month included in the price of subscription so if this field has a true value, the Meet cost is covered with subscription. If the value is false, the Meet will be charged to you at the end of the month in the invoice based on the price defined for your subscription for additional Meet units.
