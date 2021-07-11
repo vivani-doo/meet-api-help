@@ -44,7 +44,7 @@ You can obtain your API key and secret in the Meet Pro app (<https://meet.rs/pro
 
 Using the language/technology of your choice, you need to simply make this request.
 
-pseudo
+```pseudo
 POST https://api.meet.rs/v1/token
 Content-Type: application/json
 
@@ -53,20 +53,20 @@ Content-Type: application/json
     client_key: "YOUR API KEY HERE",
     client_secret: "YOUR API SECRET HERE",
 }
-
+```
 
 Note: If your api key and secret are not valid, you will get a *401 - Unauthorized* response status code.
 
 In case api key and secret are valid, you will get a response containing the JWT bearer access token and a timestamp when the issued token expires.
 
-pseudo
+```pseudo
 
     // JWT bearer token
     access_token: string
 
     // Unix epoch based date/time when become invalid
     expires_at: number
-
+```
 
 Note: You can examine the content of the JWT access token if you just paste it in https://jwt.io 
 
@@ -80,7 +80,7 @@ Let us see it in action!
 
 The simplest way to create a quick Meet (60 min, default config, anyone with a link can join at any time) is to make a simple POST request with an empty body payload.
 
-pseudo
+```pseudo
 POST https://api.meet.rs/v1/meetings
 Content-Type: application/json
 
@@ -90,11 +90,12 @@ Authorization: bearer ACCESS_TOKEN_VALUE_HERE
 
 {} <-- empty body 
 
+```
 
 
 In response to that request, you will get a new Meet definition which, among other things, will contain the URL for the newly minted Meet.
 
-pseudo
+```pseudo
 
     ...
 
@@ -102,7 +103,7 @@ pseudo
     joinUrl: string
 
     ...
-
+```
 
 
 You can now give this URL to your own users so they have their frictionless Meet.
@@ -111,7 +112,7 @@ You can now give this URL to your own users so they have their frictionless Meet
 
 Let say you would like to customize the Meet title or description, and the way to do that is to pass it in the Meet creation request body simply.
 
-pseudo
+```pseudo
 POST https://api.meet.rs/v1/meetings
 Content-Type: application/json
 
@@ -123,11 +124,11 @@ Authorization: bearer ACCESS_TOKEN_VALUE_HERE
     "title": "Meeting with John Snow",
     "description": "Annual gathering of the Black Crow society."
 }
-
+```
 
 In response to that request, you will get a new Meet definition which will have a part.
 
-pseudo
+```pseudo
 
     ...
 
@@ -137,7 +138,7 @@ pseudo
   "title": "Meeting with John Snow",
 
     ...
-
+```
 
 
 ## Meet participants
@@ -160,7 +161,7 @@ Every participant can authenticate himself/herself in one of the few supported w
 
 Let start with the example mentioned above where we would like a Meet for two participants where Jack Sparrow is an interviewer, and John Smith is the CandidateCandidate.
 
-pseudo
+```pseudo
 POST https://api.meet.rs/v1/meetings
 Content-Type: application/json
 
@@ -201,7 +202,7 @@ Authorization: bearer ACCESS_TOKEN_VALUE_HERE
   ]
 }
 
-
+```
 
 As you can tell from this sample in the interview, use case roles are mapped like:
 
@@ -222,7 +223,7 @@ In this example, to make things a bit more interesting, let's have a Meet of mor
 
 Here is how would Meet creation request look like in this scenario:
 
-pseudo
+```pseudo
 
 {
   participants: [
@@ -269,7 +270,7 @@ pseudo
     }
   ]
 }
-
+```
   
 
 NB: In the case of the Zumi Zumi participant, our access rule contains both provider and condition to be used, while in the case of Jack Sparrow, there is the only provider. The reason for this is that, in the case of condition email is the same as user email, the condition can be omitted.
@@ -304,7 +305,7 @@ Finally, the participant auth model is not constrained to a single provider but 
 
 Take a look at how Jack Sparrow admin will be able to access his Meet.
 
-pseudo
+```pseudo
 
     {
       user : {
@@ -324,7 +325,7 @@ pseudo
         }
       ]
     },
-
+```
 
 
 He can log in with any identity he has with Google, Microsoft, Linkedin, Facebook (as long he used their frank@moody.com email) or simply enter a password.
@@ -342,7 +343,7 @@ He will be the only one who can share the screen, which can mute/kick attendees 
 
 Meet API makes this type of scenario straightforward (note definition of the second participant)
 
-pseudo
+```pseudo
 
 {
   participants: [
@@ -365,16 +366,16 @@ pseudo
     }
   ]
 }
-
+```
 
 
 NB: The second participant has only a role without any access rule definition, which is fine as API will create for such entry implicitly.
 
-pseudo
+```pseudo
     accessRole: {
       provider: "Guest"
     }
-
+```
 
 This is how the logging screen for this Meet will look like
 
@@ -384,7 +385,7 @@ This is how the logging screen for this Meet will look like
 
 Sometimes Meet needs to be just a bit more constrained so anyone who knows a passcode (e.g., shared on Twitter) can access the Meet as a guest regardless of their identity  as a "Guest."
 
-pseudo
+```pseudo
 
 {
   participants: [
@@ -413,17 +414,15 @@ pseudo
     }
   ]
 }
-
-
+```
 
 NB: Only users who know the given passcode can enter the Meet as Guest.
-
 
 #### Guest with identity
 
 Sometimes you need a Meet where only a specific participant will be allowed to join as a Guest, and luckily that too is simple.
 
-pseudo
+```pseudo
 {
   participants: [
     {
@@ -456,7 +455,7 @@ pseudo
     }
   ]
 }
-
+```
 
 
 NB: John Smith will have to authenticate with Microsoft in order to be allowed to join the Meet but only in a role of a Guest.
@@ -477,7 +476,7 @@ As usual, everything you can do in the PRO app you can create using Meet API.
 
 Here is how you can fetch the available configurations.
 
-json
+```json
 GET https://api.meet.rs/v1/addonConfigurations
 Content-Type: application/json
 
@@ -485,7 +484,7 @@ Headers
 ---------------------------------------------
 Authorization: bearer ACCESS_TOKEN_VALUE_HERE
 
-
+```
 
 The addon configuration response contains a few properties:
 
@@ -502,7 +501,7 @@ Obviously, besides GET-ing a list of addon configurations, you can POST/PUT/DELE
 
 To create a Meet with a non-default addon configuration, you just need to pass it as a request param in the Meet creation call.
 
-json
+```json
 POST https://api.meet.rs/v1/meetings
 Content-Type: application/json
 
@@ -515,8 +514,7 @@ Body
 {
     addonConfigurationId: 'GUID_ID_CONFIG_TO_BE_USED'
 }
-
-
+```
 
 That's it - your Meet will be created using the config you've specified. In case you omit the parameter, the config marked as 'default' will be used.
 
@@ -532,7 +530,7 @@ As with everything else available in the PRO app, you can also just use the rest
 
 The simplest way to get the data for the tenant whose API key and secret are using and for the current month is a simple get with no params.
 
-json
+```json
 GET https://api.meet.rs/v1/feedbacks
 Content-Type: application/json
 
@@ -540,23 +538,24 @@ Headers
 ---------------------------------------------
 Authorization: bearer ACCESS_TOKEN_VALUE_HERE
 
+```
 
 If you would like to get the feedback for different date ranges, you can add to query params from and to parameters with range dates given in ISO format.
 
-pseudo
+```pseudo
 GET https://api.meet.rs/v1/feedbacks?from=2020-07-01T00:00:00.000Z&to=2020-07-31T23:59:59.000Z
 Content-Type: application/json
 
 Headers
 ---------------------------------------------
 Authorization: bearer ACCESS_TOKEN_VALUE_HERE
-
+```
 
 Both calls will return all the data of your tenant and every subtenant your tenant might have.
 
 If you would like to get only the data of a single-tenant, you need to pass tenant code/id parameter, which you can see in Company settings in PRO app, or if you GET fetch from API the list of tenants. 
 
-pseudo
+```pseudo
 GET https://api.meet.rs/v1/feedbacks/A1B2C3D4E5F6
 Content-Type: application/json
 
@@ -564,12 +563,13 @@ Headers
 ---------------------------------------------
 Authorization: bearer ACCESS_TOKEN_VALUE_HERE
 
+```
 
 This will return the feedback data only of a tenant with a given code.
 
 Of course, you can also define optional from and even when you have tenant code defined.
 
-pseudo
+```pseudo
 GET https://api.meet.rs/v1/feedbacks/A1B2C3D4E5F6?from=2020-07-01T00:00:00.000Z&to=2020-07-31T23:59:59.000Z
 Content-Type: application/json
 
@@ -577,10 +577,11 @@ Headers
 ---------------------------------------------
 Authorization: bearer ACCESS_TOKEN_VALUE_HERE
 
+```
 
 Regardless of how you make the web service call, you would always get the same feedback items looking like this.
 
-json
+```json
 [{
     "rating": 5,
     "text": "test feedback 1",
@@ -597,7 +598,7 @@ json
     "isTouchEnabled": false,
     "id": "cf08a200-3b79-445d-a849-08d82d5c6c28"
 }]
-
+```
 
 
 ## Usage
@@ -607,7 +608,7 @@ You can see the usage data in the [PRO application](https://meet.rs/pro) visuali
 
 The simplest way to get the data for the current tenant and for the current month is a simple make a GET request with no params.
 
-json
+```json
 GET https://api.meet.rs/v1/usage
 Content-Type: application/json
 
@@ -615,23 +616,24 @@ Headers
 ---------------------------------------------
 Authorization: bearer ACCESS_TOKEN_VALUE_HERE
 
+```
 
 If you would like to get the usage information for a different date range than this month, you can add to query params from and to parameters with range dates given in ISO format.
 
-pseudo
+```pseudo
 GET https://api.meet.rs/v1/usage?from=2020-07-01T00:00:00.000Z&to=2020-07-31T23:59:59.000Z
 Content-Type: application/json
 
 Headers
 ---------------------------------------------
 Authorization: bearer ACCESS_TOKEN_VALUE_HERE
-
+```
 
 Both calls will return all the data of your tenant and every subtenant your tenant might have.
 
 If you would like to get only the data of a single-tenant, you need to pass tenant code/id parameter, which you can see in Company settings in PRO app, or if you GET fetch from API the list of tenants. 
 
-pseudo
+```pseudo
 GET https://api.meet.rs/v1/usage/A1B2C3D4E5F6
 Content-Type: application/json
 
@@ -639,12 +641,13 @@ Headers
 ---------------------------------------------
 Authorization: bearer ACCESS_TOKEN_VALUE_HERE
 
+```
 
 This will return the feedback data only of a tenant with a given code.
 
 Of course, you can also define optional from and even when you have tenant code defined.
 
-pseudo
+```pseudo
 GET https://api.meet.rs/v1/usage/A1B2C3D4E5F6?from=2020-07-01T00:00:00.000Z&to=2020-07-31T23:59:59.000Z
 Content-Type: application/json
 
@@ -652,10 +655,11 @@ Headers
 ---------------------------------------------
 Authorization: bearer ACCESS_TOKEN_VALUE_HERE
 
+```
 
 Regardless of how do you make the web service call, you would always get the array of the same feedback items looking like this.
 
-json
+```json
 [{
     "code": "le3YHkUb",
     "title": "Quick meet 07/22 - 265",
